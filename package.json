@@ -1,0 +1,14 @@
+{
+  "name": "twominds",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "dotenv": "^17.4.1",
+    "express": "^4.21.0"
+  }
+}
