@@ -1,6 +1,6 @@
 # TwoMinds
 
-TwoMinds is a small Express app where two AI personas discuss a topic in alternating turns.
+TwoMinds is a small FastAPI app where two AI personas discuss a topic in alternating turns.
 
 ## New: join the discussion
 
@@ -9,13 +9,15 @@ Your message is queued and injected before the next AI turn.
 
 ## Requirements
 
-- Node.js 18+
+- Python 3.10+
 - An Anthropic API key
 
 ## Install
 
 ```bash
-npm install
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
 ## Configure API key
@@ -33,13 +35,13 @@ Tip: put this in your shell profile (`~/.zshrc`) if you use it often.
 Start normally:
 
 ```bash
-npm run start
+python -m uvicorn main:app --host 0.0.0.0 --port 3000
 ```
 
 Or run with auto-restart during development:
 
 ```bash
-npm run dev
+python -m uvicorn main:app --reload --host 0.0.0.0 --port 3000
 ```
 
 Open:
@@ -49,7 +51,7 @@ Open:
 If port 3000 is already in use, start on another port:
 
 ```bash
-PORT=3001 npm run start
+PORT=3001 python -m uvicorn main:app --host 0.0.0.0 --port 3001
 ```
 
 ## Health check
@@ -65,3 +67,19 @@ Expected response:
 ```
 
 If `configured` is `false`, the UI loads but `/api/converse` returns `503` until `ANTHROPIC_API_KEY` is set.
+
+## Logging
+
+The backend logs structured JSON events for:
+
+- startup and configuration state
+- session lifecycle
+- turn start and completion
+- user message queueing
+- stream errors/disconnects
+
+Set verbosity with:
+
+```bash
+LOG_LEVEL=DEBUG python -m uvicorn main:app --host 0.0.0.0 --port 3000
+```
