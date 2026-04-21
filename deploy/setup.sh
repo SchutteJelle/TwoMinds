@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 # First-time server setup for TwoMinds on a fresh Hetzner Ubuntu server.
-# Run once as root: bash setup.sh YOUR_DOMAIN
+# Run once as root: bash setup.sh <git-repo-url>
 set -euo pipefail
 
-DOMAIN="${1:?Usage: $0 <domain>}"
-REPO_URL="${2:?Usage: $0 <domain> <git-repo-url>}"
+REPO_URL="${1:?Usage: $0 <git-repo-url>}"
 APP_DIR="/opt/twominds"
 APP_USER="twominds"
 
 echo "==> Installing system packages"
 apt-get update -q
-apt-get install -y -q python3 python3-venv python3-pip nginx certbot python3-certbot-nginx git
+apt-get install -y -q python3 python3-venv python3-pip nginx git
 
 echo "==> Creating app user"
 id "$APP_USER" &>/dev/null || useradd --system --shell /bin/bash --home "$APP_DIR" "$APP_USER"
@@ -43,14 +42,11 @@ systemctl daemon-reload
 systemctl enable twominds
 
 echo "==> Configuring nginx"
-sed "s/YOUR_DOMAIN/$DOMAIN/g" "$APP_DIR/deploy/nginx.conf" > "/etc/nginx/sites-available/twominds"
+cp "$APP_DIR/deploy/nginx.conf" /etc/nginx/sites-available/twominds
 ln -sf /etc/nginx/sites-available/twominds /etc/nginx/sites-enabled/twominds
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
 systemctl reload nginx
-
-echo "==> Obtaining SSL certificate via Let's Encrypt"
-certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos -m "admin@$DOMAIN"
 
 echo ""
 echo "==> Done! Next steps:"
