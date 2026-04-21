@@ -3,3 +3,6 @@ node_modules/
 .venv/
 __pycache__/
 *.pyc
+.coverage
+htmlcov/
+.pytest_cache/
